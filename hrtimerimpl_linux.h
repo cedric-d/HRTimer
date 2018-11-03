@@ -1,5 +1,7 @@
-#ifndef HRTIMERPRIVATEDATA_LINUX_H
-#define HRTIMERPRIVATEDATA_LINUX_H
+#ifndef HRTIMERIMPL_LINUX_H
+#define HRTIMERIMPL_LINUX_H
+
+#include "hrtimer.h"
 
 #include <QObject>
 
@@ -8,14 +10,12 @@
 #include <sys/timerfd.h>
 
 
-class HRTimerPrivateData : public QObject
+class HRTimerImpl : public QObject
 {
     Q_OBJECT
 
-    friend class HRTimer;
-
-    explicit HRTimerPrivateData(QObject *parent = Q_NULLPTR);
-    ~HRTimerPrivateData();
+    explicit HRTimerImpl(Qt::TimerType atype, HRTimer *parent);
+    ~HRTimerImpl();
 
     //! Clock used by the timer.
     clockid_t clockid;
@@ -29,12 +29,27 @@ class HRTimerPrivateData : public QObject
     //! Single shot flag.
     bool singleShot;
 
-signals:
-    //! Signal emitted on timeout.
-    void timeout(QPrivateSignal);
+public:
+    //! Implementation of HRTimer::isActive().
+    bool isActive() const;
+
+    //! Implementation of HRTimer::remainingTime().
+    qint64 remainingTime() const;
+
+    //! Implementation of HRTimer::timerType().
+    Qt::TimerType timerType() const;
+
+    //! Implementation of HRTimer::start().
+    void start();
+
+    //! Implementation of HRTimer::stop().
+    void stop();
 
 private slots:
-    void onActivation(int s);
+    //! Slot called on timer expiration.
+    void onActivation(int fd);
+
+    friend class HRTimer;
 };
 
-#endif // HRTIMERPRIVATEDATA_LINUX_H
+#endif // HRTIMERIMPL_LINUX_H
