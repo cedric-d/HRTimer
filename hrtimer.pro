@@ -22,9 +22,9 @@ HEADERS += hrtimer.h \
            hrtimer_global.h
 
 linux {
-    HEADERS += hrtimerprivatedata_linux.h
+    HEADERS += hrtimerimpl_linux.h
     SOURCES += hrtimer_linux.cpp \
-               hrtimerprivatedata_linux.cpp
+               hrtimerimpl_linux.cpp
     LIBS += -lrt
 }
 

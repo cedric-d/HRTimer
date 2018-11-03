@@ -11,7 +11,7 @@
 # include <chrono>
 #endif
 
-class HRTimerPrivateData;
+class HRTimerImpl;
 
 class HRTIMERSHARED_EXPORT HRTimer : public QObject
 {
@@ -34,7 +34,7 @@ class HRTIMERSHARED_EXPORT HRTimer : public QObject
 
 public:
     //! Constructs a timer with the given \p parent.
-    explicit HRTimer(QObject *parent = Q_NULLPTR);
+    explicit HRTimer(Qt::TimerType atype = Qt::PreciseTimer, QObject *parent = Q_NULLPTR);
 
     //! Destroys the timer.
     virtual ~HRTimer();
@@ -87,11 +87,13 @@ public slots:
 
 signals:
     //! This signal is emitted when the timer times out.
-    void timeout();
+    void timeout(QPrivateSignal);
 
 private:
-    //! Platform specific data.
-    HRTimerPrivateData *priv;
+    //! Platform specific implementation.
+    HRTimerImpl *impl;
+
+    friend class HRTimerImpl;
 };
 
 #endif // HRTIMER_H
